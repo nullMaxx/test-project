@@ -1,4 +1,3 @@
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -19,38 +18,27 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Virtual environments
 .venv/
 venv/
 ENV/
 env/
-
-# Environment variables
 .env
 .env.*
 !.env.example
-
-# IDE / Editors
 .vscode/
 .idea/
 .ua/
 GEMINI.md
 *.swp
 *.swo
-
-# Testing & Linting
 .pytest_cache/
 .coverage
 htmlcov/
 .mypy_cache/
 .ruff_cache/
-
-# Databases & local logs
 *.sqlite3
 *.db
 *.log
-
-# OS
 .DS_Store
 Thumbs.db
+pyrightconfig.json
