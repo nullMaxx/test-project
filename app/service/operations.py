@@ -17,10 +17,14 @@ def add_income(operation: OperationRequest, db: Session, current_user: User) -> 
         raise HTTPException(status_code=404, detail=f"Wallet '{operation.wallet_name}' not found")
 
     wallet = wallets_repository.add_income(db, operation.wallet_name, current_user.id, operation.amount)
-    operation = operations_repository.create_operation(db=db, wallet_id=wallet.id, type=OperationType.INCOME, amount=operation.amount, currency=wallet.currency, category=operation.description)
+    op = operations_repository.create_operation(db=db, wallet_id=wallet.id, type=OperationType.INCOME, amount=operation.amount, currency=wallet.currency, category=operation.description)
     db.commit()
 
-    return OperationResponse.model_validate(operation)
+    resp = OperationResponse.model_validate(op)
+    resp.message = "Income added"
+    resp.wallet = wallet.name
+    resp.new_balance = wallet.balance
+    return resp
 
 def add_expense(operation: OperationRequest, db: Session, current_user: User) -> OperationResponse:
     if not wallets_repository.is_wallet_exists(db, operation.wallet_name, current_user.id):
@@ -34,10 +38,14 @@ def add_expense(operation: OperationRequest, db: Session, current_user: User) ->
         raise HTTPException(status_code=400, detail=f"Insufficient funds. Available: {wallet.balance}")
 
     wallet = wallets_repository.add_expense(db, operation.wallet_name, current_user.id, operation.amount)
-    operation = operations_repository.create_operation(db=db, wallet_id=wallet.id, type=OperationType.EXPENSE, amount=operation.amount, currency=wallet.currency, category=operation.description)
+    op = operations_repository.create_operation(db=db, wallet_id=wallet.id, type=OperationType.EXPENSE, amount=operation.amount, currency=wallet.currency, category=operation.description)
     db.commit()
 
-    return OperationResponse.model_validate(operation)
+    resp = OperationResponse.model_validate(op)
+    resp.message = "Expense added"
+    resp.wallet = wallet.name
+    resp.new_balance = wallet.balance
+    return resp
 
 def get_operation_list(db: Session, current_user: User, wallet_id: int | None = None, date_from: datetime | None = None, date_to: datetime | None = None) -> list[OperationResponse]:
     if wallet_id:

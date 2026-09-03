@@ -21,7 +21,7 @@ class Wallet(Base):
     name: Mapped[str]
     balance: Mapped[Decimal]
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    currency: Mapped[CurrencyEnum]
+    currency: Mapped[CurrencyEnum] = mapped_column(default=CurrencyEnum.USD)
 
 class Operation(Base):
     __tablename__ = "operation"

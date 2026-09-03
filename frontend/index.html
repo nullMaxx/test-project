@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="14" x="2" y="5" rx="2"/>
+            <line x1="2" x2="22" y1="10" y2="10"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Finance Dashboard</h1>
+          <span>Personal Multi-Wallet Tracker</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="user-badge" id="userBadge">
+          <span class="user-status-dot"></span>
+          <span id="currentUserName">Loading...</span>
+        </div>
+
+        <button class="btn btn-secondary" id="btnToggleAuth" title="Switch or Create User">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Account</span>
+        </button>
+
+        <button class="btn-icon" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+          <svg id="themeIconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/>
+            <path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/>
+            <path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          <svg id="themeIconMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="auth-panel" id="authPanel">
+      <div class="section-header">
+        <h3 class="section-title">User Authentication</h3>
+        <button class="btn btn-secondary" id="btnCloseAuth">Close</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">
+        Enter a login identifier. If the user does not exist, click "Register New User".
+      </p>
+      <div class="auth-form-row">
+        <input type="text" id="authLoginInput" class="input-field" placeholder="Enter username / login" style="min-width: 240px;">
+        <button class="btn btn-primary" id="btnSwitchUser">Set Active User</button>
+        <button class="btn btn-secondary" id="btnRegisterUser">Register New User</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Total Balance</span>
+          <div class="stat-icon primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="20" height="14" x="2" y="5" rx="2"/>
+              <line x1="2" x2="22" y1="10" y2="10"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" id="statTotalBalance">$0.00</div>
+        <div class="stat-subtitle" id="statWalletCount">0 active wallets</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Total Income</span>
+          <div class="stat-icon success">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" id="statTotalIncome" style="color: var(--success);">$0.00</div>
+        <div class="stat-subtitle" id="statIncomeCount">0 transactions</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Total Expenses</span>
+          <div class="stat-icon danger">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+              <polyline points="17 18 23 18 23 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" id="statTotalExpenses" style="color: var(--danger);">$0.00</div>
+        <div class="stat-subtitle" id="statExpenseCount">0 transactions</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Net Flow</span>
+          <div class="stat-icon warning">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v12"/>
+              <path d="m8 10 4-4 4 4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value" id="statNetFlow">$0.00</div>
+        <div class="stat-subtitle">Net cash flow</div>
+      </div>
+    </div>
+
+    <section class="wallets-section">
+      <div class="section-header">
+        <h2 class="section-title">Your Wallets</h2>
+        <button class="btn btn-primary" id="btnOpenCreateWallet">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" x2="12" y1="5" y2="19"/>
+            <line x1="5" x2="19" y1="12" y2="12"/>
+          </svg>
+          <span>New Wallet</span>
+        </button>
+      </div>
+      <div class="wallets-grid" id="walletsGrid">
+        <div class="empty-state">Loading wallets...</div>
+      </div>
+    </section>
+
+    <div class="quick-actions-bar">
+      <button class="btn btn-success" id="btnOpenIncomeModal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" x2="12" y1="5" y2="19"/>
+          <line x1="5" x2="19" y1="12" y2="12"/>
+        </svg>
+        <span>Add Income</span>
+      </button>
+
+      <button class="btn btn-danger" id="btnOpenExpenseModal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" x2="19" y1="12" y2="12"/>
+        </svg>
+        <span>Add Expense</span>
+      </button>
+
+      <button class="btn btn-secondary" id="btnOpenTransferModal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+        <span>Transfer Funds</span>
+      </button>
+
+      <button class="btn btn-secondary" id="btnExportCsv" style="margin-left: auto;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        <span>Export CSV</span>
+      </button>
+    </div>
+
+    <div class="content-grid">
+      <div class="card">
+        <div class="table-toolbar">
+          <div class="filter-group">
+            <input type="text" id="filterSearch" class="input-field" placeholder="Search description..." style="width: 180px;">
+            <select id="filterWallet" class="select-field">
+              <option value="">All Wallets</option>
+            </select>
+            <select id="filterType" class="select-field">
+              <option value="">All Types</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+              <option value="transfer">Transfer</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <input type="date" id="filterDateFrom" class="input-field" title="From date">
+            <input type="date" id="filterDateTo" class="input-field" title="To date">
+            <button class="btn btn-secondary" id="btnResetFilters">Reset</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Wallet</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th style="text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsTableBody">
+              <tr>
+                <td colspan="5" class="empty-state">Loading transactions...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom: 16px;">Expense Breakdown</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Top categories by expense volume</p>
+        <div class="category-list" id="categoryBreakdownList">
+          <div class="empty-state">No expense records yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalCreateWallet">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Create New Wallet</h3>
+        <button class="btn-icon" data-close="modalCreateWallet">&times;</button>
+      </div>
+      <form id="formCreateWallet">
+        <div class="form-group">
+          <label class="form-label" for="newWalletName">Wallet Name</label>
+          <input type="text" id="newWalletName" class="input-field form-control" required placeholder="e.g. Savings, Main Card">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newWalletCurrency">Currency</label>
+          <select id="newWalletCurrency" class="select-field form-control">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="UAH">UAH (₴)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newWalletInitialBalance">Initial Balance</label>
+          <input type="number" id="newWalletInitialBalance" class="input-field form-control" step="0.01" min="0" value="0.00" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalCreateWallet">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Wallet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalIncome">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Income</h3>
+        <button class="btn-icon" data-close="modalIncome">&times;</button>
+      </div>
+      <form id="formIncome">
+        <div class="form-group">
+          <label class="form-label" for="incomeWalletSelect">Target Wallet</label>
+          <select id="incomeWalletSelect" class="select-field form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="incomeAmount">Amount</label>
+          <input type="number" id="incomeAmount" class="input-field form-control" step="0.01" min="0.01" placeholder="0.00" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="incomeDescription">Category / Description</label>
+          <input type="text" id="incomeDescription" class="input-field form-control" placeholder="e.g. Salary, Freelance, Dividend">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalIncome">Cancel</button>
+          <button type="submit" class="btn btn-success">Save Income</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalExpense">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Expense</h3>
+        <button class="btn-icon" data-close="modalExpense">&times;</button>
+      </div>
+      <form id="formExpense">
+        <div class="form-group">
+          <label class="form-label" for="expenseWalletSelect">Source Wallet</label>
+          <select id="expenseWalletSelect" class="select-field form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="expenseAmount">Amount</label>
+          <input type="number" id="expenseAmount" class="input-field form-control" step="0.01" min="0.01" placeholder="0.00" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="expenseDescription">Category / Description</label>
+          <input type="text" id="expenseDescription" class="input-field form-control" placeholder="e.g. Groceries, Rent, Transport">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalExpense">Cancel</button>
+          <button type="submit" class="btn btn-danger">Save Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalTransfer">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Transfer Funds</h3>
+        <button class="btn-icon" data-close="modalTransfer">&times;</button>
+      </div>
+      <form id="formTransfer">
+        <div class="form-group">
+          <label class="form-label" for="transferFromSelect">From Wallet</label>
+          <select id="transferFromSelect" class="select-field form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="transferToSelect">To Wallet</label>
+          <select id="transferToSelect" class="select-field form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="transferAmount">Amount</label>
+          <input type="number" id="transferAmount" class="input-field form-control" step="0.01" min="0.01" placeholder="0.00" required>
+        </div>
+        <div id="transferRateInfo" class="exchange-rate-banner" style="display: none;">
+          Rate preview: <strong id="transferRateValue">1.0</strong>. Destination will receive approximately <strong id="transferEstTarget">0.00</strong>.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modalTransfer">Cancel</button>
+          <button type="submit" class="btn btn-primary">Execute Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

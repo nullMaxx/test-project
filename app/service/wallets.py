@@ -26,3 +26,8 @@ def create_wallet(wallet: CreateWalletRequest, db: Session, current_user: User) 
     db.commit()
 
     return WalletResponse.model_validate(wallet_obj)
+
+
+def get_wallets(db: Session, current_user: User) -> list[WalletResponse]:
+    wallets = wallets_repository.get_all_wallets(db, current_user.id)
+    return [WalletResponse.model_validate(w) for w in wallets]

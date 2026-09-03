@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, computed_field
 
 from app.enum import CurrencyEnum
 
@@ -60,6 +60,11 @@ class WalletResponse(BaseModel):
     balance: Decimal
     currency: CurrencyEnum
 
+    @computed_field
+    @property
+    def wallet(self) -> str:
+        return self.name
+
 class OperationResponse(BaseModel):
     model_config = {"from_attributes": True}
 
@@ -71,6 +76,14 @@ class OperationResponse(BaseModel):
     category: str | None = None
     subcategory: str | None = None
     created_at: datetime
+    message: str | None = None
+    wallet: str | None = None
+    new_balance: Decimal | None = None
+
+    @computed_field
+    @property
+    def description(self) -> str | None:
+        return self.category
 
 class TransferCreateSchema(BaseModel):
     from_wallet_id: int
