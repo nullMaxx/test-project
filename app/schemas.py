@@ -1,5 +1,8 @@
+from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel, Field, field_validator
+
+from app.enum import CurrencyEnum
 
 
 class OperationRequest(BaseModel):
@@ -24,6 +27,7 @@ class OperationRequest(BaseModel):
 class CreateWalletRequest(BaseModel):
     name: str = Field(..., max_length=127)
     initial_balance: Decimal = 0
+    currency: CurrencyEnum = CurrencyEnum.USD
 
     @field_validator('initial_balance')
     def balance_not_negative(cls, v: Decimal) -> Decimal:
@@ -47,3 +51,42 @@ class UserResponse(UserRequest):
     model_config = {"from_attributes": True}
     
     id: int
+
+class WalletResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
+    id: int
+    name: str
+    balance: Decimal
+    currency: CurrencyEnum
+
+class OperationResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
+    id: int
+    wallet_id: int
+    type: str
+    amount: Decimal
+    currency: CurrencyEnum
+    category: str | None = None
+    subcategory: str | None = None
+    created_at: datetime
+
+class TransferCreateSchema(BaseModel):
+    from_wallet_id: int
+    to_wallet_id: int
+    amount: Decimal
+
+    @field_validator("to_wallet_id")
+    @classmethod
+    def wallet_must_differ(cls, v: int, info) -> int:
+        if "from_wallet_id" in info.data and v == info.data["from_wallet_id"]:
+            raise ValueError("Destination wallet must be different from source wallet")
+        return v
+
+    @field_validator("amount")
+    @classmethod
+    def amount_must_be_positive(cls, v: Decimal, info) -> Decimal:
+        if v <= 0:
+            raise ValueError("Amount must be positive")
+        return v
